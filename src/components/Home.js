@@ -1,20 +1,12 @@
 
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 
 
 function Home() {
-
     const [items, setItems] = useState([]);
-    console.log("items: ",items);
-
-    useEffect(() => {
-        const items = JSON.parse(localStorage.getItem('userData'));
-        if (items) {
-           setItems(items);
-        }
-    }, []);
+    const [savedData, setSavedData] = useState([]);
 
     const URL = "https://api.dictionaryapi.dev/api/v2/entries/en/";
     const encodedUrl = encodeURIComponent(URL);
@@ -29,6 +21,7 @@ function Home() {
     };
 
     function Search() {
+
         async function getResponse() {
             await fetch(encodedUrl + text, {
                 method: "GET",
@@ -41,18 +34,28 @@ function Home() {
 
         const time = new Date();
 
-        const userData = {
+        const userData={
             word: text,
-            Datetime: time,
+            Datetime: time
         };
 
-        localStorage.setItem("userData", JSON.stringify(userData));
+        
 
+        items.push(userData);
+
+       
     }
+    
+    useEffect(() => {
+        localStorage.setItem('items', JSON.stringify(items));
+    }, [items]);
+
+    
+
 
     return (
         <>
-            {console.log(localStorage)}
+        {console.log(localStorage)}
             <Header />
             <div className='Formular'>
                 <form>
@@ -77,7 +80,18 @@ function Home() {
                     </thead>
 
                     <tbody>
-                        {/* {items.length===0?<>nothing</>:items.map(data => (
+                        <tr >
+                            <td>Example</td>
+                            <td>15.11.2023 11:24</td>
+                            <td>
+                                <button>View</button>
+                                <button>Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                    <tbody>
+                        {items.length !== 0 ? <><tr><td>nothing</td></tr></> : items.map(data => (
                             <tr >
                                 <td>{data.word}</td>
                                 <td>{data.Datetime}</td>
@@ -86,7 +100,7 @@ function Home() {
                                     <button>Delete</button>
                                 </td>
                             </tr>
-                        ))} */}
+                        ))}
                     </tbody>
 
                 </table>
